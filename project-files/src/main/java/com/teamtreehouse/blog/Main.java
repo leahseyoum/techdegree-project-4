@@ -5,6 +5,7 @@ import com.teamtreehouse.blog.dao.SimpleBlogDao;
 import com.teamtreehouse.blog.model.BlogEntry;
 import com.teamtreehouse.blog.model.Comment;
 import spark.ModelAndView;
+import spark.Request;
 import spark.template.handlebars.HandlebarsTemplateEngine;
 
 import java.util.HashMap;
@@ -13,7 +14,10 @@ import java.util.Map;
 import static spark.Spark.*;
 
 public class Main {
+    private static final String FLASH_MESSAGE_KEY = "flashMessage";
+
     public static void main(String[] args) {
+
         staticFileLocation("/public");
         BlogDao dao = new SimpleBlogDao();
         Map<String, Object> indexModel = new HashMap<>();
@@ -25,13 +29,38 @@ public class Main {
         dao.addEntry(blog3);
 
         before((req, res) -> {
-            if(req.cookie("username") != null) {
-                req.attribute("username", req.cookie("username"));
+            if(req.cookie("password") != null) {
+                req.attribute("password", req.cookie("password"));
             }
         });
 
+//        before("/", (req, res) -> {
+//            if(req.cookie("password") == null || !req.cookie("password").equals("admin")) {
+//                setFlashMessage(req,"Please sign in first");
+//                res.redirect("/password");
+//            }
+//        });
+
+        get("/password", (req, res) -> {
+            Map<String, String> model = new HashMap<>();
+            model.put("flashMessage", captureFlashMessage(req));
+            return new ModelAndView(model, "password.hbs");
+        }, new HandlebarsTemplateEngine());
+
+        post("/password", (req, res) -> {
+           String password = req.queryParams("password");
+           if (password.equals("admin")) {
+               res.cookie("password", password);
+               res.redirect("/");
+           } else {
+               req.session().attribute("flashMessage", "Invalid password. Try again.");
+               res.redirect("/password");
+           }
+           return null;
+        });
+
         get("/", (req, res) -> {
-            indexModel.put("username", req.attribute("username"));
+            indexModel.put("password", req.attribute("password"));
             indexModel.put("entries", dao.findAllEntries());
             return new ModelAndView(indexModel, "index.hbs");
         }, new HandlebarsTemplateEngine());
@@ -44,6 +73,11 @@ public class Main {
         }, new HandlebarsTemplateEngine());
 
         get("/new", (req, res) -> {
+            if(req.cookie("password") == null || !req.cookie("password").equals("admin")) {
+                setFlashMessage(req,"Please sign in first");
+                res.redirect("/password");
+                halt();
+            }
             return new ModelAndView(null, "new.hbs");
         }, new HandlebarsTemplateEngine());
 
@@ -58,6 +92,11 @@ public class Main {
         });
 
         get("/entries/:slug/edit", (req, res) -> {
+            if(req.cookie("password") == null || !req.cookie("password").equals("admin")) {
+                setFlashMessage(req,"Please sign in first");
+                res.redirect("/password");
+                halt();
+            }
             Map<String, Object> model = new HashMap<>();
            BlogEntry entry = dao.findEntryBySlug(req.params("slug"));
            model.put("entry", entry);
@@ -83,10 +122,37 @@ public class Main {
         });
 
         post("/entries/:slug/delete", (req, res) -> {
+            if(req.cookie("password") == null || !req.cookie("password").equals("admin")) {
+                setFlashMessage(req,"Please sign in first");
+                res.redirect("/password");
+                halt();
+            }
            dao.deleteEntryBySlug(req.params("slug"));
            res.redirect("/");
            return null;
         });
 
+    }
+
+    private static void setFlashMessage(Request req, String message) {
+        req.session().attribute(FLASH_MESSAGE_KEY, message);
+    }
+
+    private static String getFlashMessage(Request req) {
+        if (req.session(false) == null) {
+            return null;
+        }
+        if (!req.session().attributes().contains(FLASH_MESSAGE_KEY)) {
+            return null;
+        }
+        return (String) req.session().attribute(FLASH_MESSAGE_KEY);
+    }
+
+    private static String captureFlashMessage(Request req) {
+        String message = getFlashMessage(req);
+        if (message != null) {
+            req.session().removeAttribute(FLASH_MESSAGE_KEY);
+        }
+        return message;
     }
 }

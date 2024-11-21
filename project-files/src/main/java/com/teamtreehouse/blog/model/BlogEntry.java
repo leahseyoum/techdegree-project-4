@@ -10,7 +10,8 @@ public class BlogEntry {
     private String title;
     private String content;
     private String author;
-    private LocalDateTime date;
+    private LocalDateTime unformattedDate;
+    private String date;
     private List<Comment> comments;
     private String slug;
 
@@ -18,7 +19,8 @@ public class BlogEntry {
         this.title = title;
         this.content = content;
         this.author = author;
-        this.date = LocalDateTime.now();
+        unformattedDate = LocalDateTime.now();
+        this.date = unformattedDate.format(DateTimeFormatter.ofPattern("MMMM dd, yyyy h:mm"));
         this.comments = new ArrayList<>();
         try {
             Slugify slugify = new Slugify();
@@ -31,7 +33,7 @@ public class BlogEntry {
     public String getTitle() {return title;}
     public String getContent() {return content;}
     public String getAuthor() {return author;}
-    public LocalDateTime getDate() {return date;}
+    public String getDate() {return date;}
 
     public void setTitle(String title) {
         this.title = title;
