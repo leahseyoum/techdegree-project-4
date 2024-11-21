@@ -262,6 +262,13 @@ input[type=submit] {
 	margin-right: 5px;
 }
 
+#flash-message {
+	color: white;
+	background-color: grey;
+	text-align: center;
+	font-size: 20px;
+}
+
 
 
 

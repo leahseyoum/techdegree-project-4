@@ -34,13 +34,6 @@ public class Main {
             }
         });
 
-//        before("/", (req, res) -> {
-//            if(req.cookie("password") == null || !req.cookie("password").equals("admin")) {
-//                setFlashMessage(req,"Please sign in first");
-//                res.redirect("/password");
-//            }
-//        });
-
         get("/password", (req, res) -> {
             Map<String, String> model = new HashMap<>();
             model.put("flashMessage", captureFlashMessage(req));
