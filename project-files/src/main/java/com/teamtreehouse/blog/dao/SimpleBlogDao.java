@@ -29,4 +29,15 @@ public class SimpleBlogDao implements BlogDao {
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
     }
+
+    @Override
+    public BlogEntry updateEntry(String slug, String title, String content) {
+        BlogEntry entry = findEntryBySlug(slug);
+        if (entry != null) {
+            entry.setTitle(title);
+            entry.setContent(content);
+            entry.setSlug(title);
+        }
+        return entry;
+    }
 }

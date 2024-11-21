@@ -28,6 +28,18 @@ public class BlogEntry {
         }
     }
 
+    public String getTitle() {return title;}
+    public String getContent() {return content;}
+    public String getAuthor() {return author;}
+    public LocalDateTime getDate() {return date;}
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 
     public boolean addComment(Comment comment) {
         return comments.add(comment);
@@ -40,5 +52,15 @@ public class BlogEntry {
     public String getSlug() {
         return slug;
     }
+
+    public void setSlug(String slug) {
+        try {
+            Slugify slugify = new Slugify();
+            slug = slugify.slugify(title);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 }
