@@ -21,7 +21,7 @@ public class Main {
         staticFileLocation("/public");
         BlogDao dao = new SimpleBlogDao();
         Map<String, Object> indexModel = new HashMap<>();
-        BlogEntry blog1 = new BlogEntry("The best day I’ve ever had", "this is test content", "test_author1");
+        BlogEntry blog1 = new BlogEntry("The best day I’ve ever had", "this is test content", "test_author1", "java", "test tag");
         BlogEntry blog2 = new BlogEntry("The absolute worst day I’ve ever had", "this is test content", "test_author2");
         BlogEntry blog3 = new BlogEntry("That time at the mall", "this is test content", "test_author3");
         dao.addEntry(blog1);
@@ -31,6 +31,22 @@ public class Main {
         before((req, res) -> {
             if(req.cookie("password") != null) {
                 req.attribute("password", req.cookie("password"));
+            }
+        });
+
+        before("/entries/:slug/delete", (req, res) -> {
+            if(req.cookie("password") == null || !req.cookie("password").equals("admin")) {
+                setFlashMessage(req,"Please sign in first");
+                res.redirect("/password");
+                halt();
+            }
+        });
+
+        before("/entries/:slug/edit", (req, res) -> {
+            if(req.cookie("password") == null || !req.cookie("password").equals("admin")) {
+                setFlashMessage(req,"Please sign in first");
+                res.redirect("/password");
+                halt();
             }
         });
 
@@ -78,18 +94,15 @@ public class Main {
            String title = req.queryParams("title");
            String content = req.queryParams("content");
            String author = req.queryParams("author");
-           BlogEntry newEntry = new BlogEntry(title, content, author);
+           String tags = req.queryParams("tags");
+           String[] tagsArray = tags.split(",");
+           BlogEntry newEntry = new BlogEntry(title, content, author, tagsArray);
            dao.addEntry(newEntry);
            res.redirect("/");
            return null;
         });
 
         get("/entries/:slug/edit", (req, res) -> {
-            if(req.cookie("password") == null || !req.cookie("password").equals("admin")) {
-                setFlashMessage(req,"Please sign in first");
-                res.redirect("/password");
-                halt();
-            }
             Map<String, Object> model = new HashMap<>();
            BlogEntry entry = dao.findEntryBySlug(req.params("slug"));
            model.put("entry", entry);
@@ -99,7 +112,8 @@ public class Main {
         post("/entries/:slug/edit", (req, res) -> {
            String newTitle = req.queryParams("title");
            String newContent = req.queryParams("content");
-           BlogEntry updatedEntry = dao.updateEntry(req.params("slug"), newTitle, newContent);
+           String tags = req.queryParams("tags");
+           BlogEntry updatedEntry = dao.updateEntry(req.params("slug"), newTitle, newContent, tags);
            res.redirect("/entries/" + updatedEntry.getSlug());
            return null;
         });
@@ -115,11 +129,6 @@ public class Main {
         });
 
         post("/entries/:slug/delete", (req, res) -> {
-            if(req.cookie("password") == null || !req.cookie("password").equals("admin")) {
-                setFlashMessage(req,"Please sign in first");
-                res.redirect("/password");
-                halt();
-            }
            dao.deleteEntryBySlug(req.params("slug"));
            res.redirect("/");
            return null;

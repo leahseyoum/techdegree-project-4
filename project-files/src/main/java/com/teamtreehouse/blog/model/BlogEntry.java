@@ -3,8 +3,7 @@ import com.github.slugify.Slugify;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class BlogEntry {
     private String title;
@@ -14,14 +13,21 @@ public class BlogEntry {
     private String date;
     private List<Comment> comments;
     private String slug;
+    private Set<String> tags;
 
-    public BlogEntry(String title, String content, String author) {
+    public BlogEntry(String title, String content, String author, String ...tags) {
         this.title = title;
         this.content = content;
         this.author = author;
         unformattedDate = LocalDateTime.now();
         this.date = unformattedDate.format(DateTimeFormatter.ofPattern("MMMM dd, yyyy h:mm"));
         this.comments = new ArrayList<>();
+        if (tags.length == 0) {
+            this.tags = new HashSet<>();
+        } else {
+            this.tags = new HashSet<>();
+            this.tags.addAll(Arrays.asList(tags));
+        }
         try {
             Slugify slugify = new Slugify();
             slug = slugify.slugify(title);
@@ -34,6 +40,7 @@ public class BlogEntry {
     public String getContent() {return content;}
     public String getAuthor() {return author;}
     public String getDate() {return date;}
+    public Set<String> getTags() {return tags;}
 
     public void setTitle(String title) {
         this.title = title;
@@ -49,6 +56,12 @@ public class BlogEntry {
 
     public List<Comment> getComments() {
         return comments;
+    }
+
+    public void setTags(String tags) {
+        String[] tagsArray = tags.split(",");
+        this.tags = new HashSet<>();
+        this.tags.addAll(Arrays.asList(tagsArray));
     }
 
     public String getSlug() {

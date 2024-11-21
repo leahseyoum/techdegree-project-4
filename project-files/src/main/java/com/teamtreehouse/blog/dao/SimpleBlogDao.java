@@ -31,12 +31,13 @@ public class SimpleBlogDao implements BlogDao {
     }
 
     @Override
-    public BlogEntry updateEntry(String slug, String title, String content) {
+    public BlogEntry updateEntry(String slug, String title, String content, String tags) {
         BlogEntry entry = findEntryBySlug(slug);
         if (entry != null) {
             entry.setTitle(title);
             entry.setContent(content);
             entry.setSlug(title);
+            entry.setTags(tags);
         }
         return entry;
     }
