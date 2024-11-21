@@ -82,5 +82,11 @@ public class Main {
             return null;
         });
 
+        post("/entries/:slug/delete", (req, res) -> {
+           dao.deleteEntryBySlug(req.params("slug"));
+           res.redirect("/");
+           return null;
+        });
+
     }
 }

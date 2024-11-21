@@ -9,4 +9,5 @@ public interface BlogDao {
     List<BlogEntry> findAllEntries();
     BlogEntry findEntryBySlug(String slug);
     BlogEntry updateEntry(String slug, String title, String content);
+    void deleteEntryBySlug(String slug);
 }

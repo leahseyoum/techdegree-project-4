@@ -40,4 +40,10 @@ public class SimpleBlogDao implements BlogDao {
         }
         return entry;
     }
+
+    @Override
+    public void deleteEntryBySlug(String slug) {
+        BlogEntry entry = findEntryBySlug(slug);
+        blogEntries.remove(entry);
+    }
 }
