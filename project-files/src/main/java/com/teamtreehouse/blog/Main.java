@@ -64,7 +64,7 @@ public class Main {
                res.cookie("password", password);
                res.redirect("/");
            } else {
-               req.session().attribute("flashMessage", "Invalid password. Try again.");
+               setFlashMessage(req, "Invalid password. Try again.");
                res.redirect("/password");
            }
            return null;
@@ -141,6 +141,7 @@ public class Main {
 
     }
 
+    //Flash Message Static methods
     private static void setFlashMessage(Request req, String message) {
         req.session().attribute(FLASH_MESSAGE_KEY, message);
     }
