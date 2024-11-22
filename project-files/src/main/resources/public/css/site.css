@@ -7,8 +7,8 @@ body {
 	background: url(../../concepts/JavaTechdegree_SparkBlog_1.jg) top center no-repeat;
 	font-size: 15px;
 	color: #000;
-	font-family: 'Noto Serif', Georgia, serif;
-	background: #444;
+	font-family: "Bradley Hand";
+	background: #e097c3;
 }
 .container {
 	margin: 0 auto;
@@ -21,23 +21,23 @@ header .site-header {
 	height: 95px;
 }
 header .logo {
-	border: 5px solid #000;
+	border:5px solid #cb0e7f82;
 	text-decoration: none;
-	color: #000;
+	color: #78108e;
 	font-size: 21px;
 	font-weight: bold;
 	padding: 5px 10px;
 	margin: 24px 0 0 0;
 	float: left;
 	text-transform: uppercase;
-	font-family: 'Noto Sans', sans-serif;
+	font-family: "Bradley Hand";
 }
 header .new-entry {
 	float: right;
 	margin: 25px 0 0 0;
 }
 footer {
-	background: #444;
+	background: #e097c3;
 	height: 30px;
 	text-align: center;
 	padding: 35px 0;
@@ -66,7 +66,7 @@ footer a {
 	color: #FFF;
 	font-weight: bold;
 	font-size: 13px;
-	font-family: 'Noto Sans', sans-serif;
+	font-family: "Bradley Hand";
 }
 .button.button-secondary {
 	background: transparent;
@@ -173,7 +173,7 @@ a.link {
 	margin-bottom: 40px;
 }
 .entry-comments {
-	background: #f1f1f1;
+	background: #e097c3;
 	padding: 70px 0;
 }
 .entry-comments .container {
@@ -197,7 +197,7 @@ a.link {
 }
 .comment time {
 	display: block;
-	color: #888;
+	color: #4c4b4b;
 	font-size: 14px;
 	margin: 3px 0 20px 0;
 }
@@ -284,7 +284,9 @@ input[type=submit] {
 	font-size: 14px;
 }
 
-
+#delete-button {
+	margin-top: 15px;
+}
 
 
 

@@ -21,10 +21,13 @@
                         <label for="content"></label>
                         <textarea rows="5" name="content" id="entry" required>{{entry.content}}</textarea>
                         <label for="tags">
-                            <input type="text" name="tags" placeholder="Separate tags with a comma"><br>
+                            <input type="text" name="tags" placeholder="Separate tags with a comma" value={{#each entry.tags}}{{this}}{{#unless @last}},{{/unless}}{{/each}}><br>
                         </label>
                         <input type="submit" value="Save Entry" class="button">
-                        <a href="/" class="button button-secondary">Cancel</a>
+                        <a href="/entries/{{entry.slug}}" class="button button-secondary">Cancel</a>
+                    </form>
+                    <form action="/entries/{{entry.slug}}/delete" method="post">
+                        <input id="delete-button" type="submit" value="Delete Entry" class="button">
                     </form>
                 </div>
             </div>
